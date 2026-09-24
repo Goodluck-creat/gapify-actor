@@ -6,182 +6,290 @@
 <title>Gapify — Find the gap in your market</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg: #0A0A0D;
-    --panel: #16171D;
-    --panel-2: #1D1E26;
-    --border: #2A2B34;
-    --text: #F4F4F2;
-    --text-soft: #9A9AA6;
+    --ink: #12261F;
+    --ink-soft: #4B5F57;
     --green: #B6FF3D;
-    --green-dim: #7FB82A;
+    --green-deep: #6FA82A;
+    --teal: #0E4B3D;
     --orange: #F5A623;
-    --purple: #B39DDB;
+    --purple: #9C7FD9;
+    --glass: rgba(255,255,255,0.82);
+    --glass-strong: rgba(255,255,255,0.94);
+    --border: rgba(18,38,31,0.10);
   }
   *{ box-sizing: border-box; }
-  html,body{ margin:0; padding:0; }
+  html,body{ margin:0; padding:0; min-height:100%; }
   body{
-    background: var(--bg);
-    color: var(--text);
+    color: var(--ink);
     font-family: 'Inter', sans-serif;
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
+    background:
+      linear-gradient(160deg, rgba(14,75,61,0.78), rgba(20,40,30,0.5) 55%, rgba(182,255,61,0.16)),
+      url('https://images.unsplash.com/photo-1770129157442-5f080cacf11c?fm=jpg&q=80&w=1920&auto=format&fit=crop') center/cover no-repeat fixed;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
   }
-  .wrap{ max-width: 720px; margin: 0 auto; padding: 48px 24px 100px; }
 
-  .mark{ display:flex; align-items:center; gap:8px; margin-bottom: 44px; }
-  .mark .dot{ width:10px; height:10px; border-radius:50%; background: var(--green); }
-  .mark span{ font-weight: 700; font-size: 15px; letter-spacing: 0.01em; }
+  /* ambient floating blobs for life/depth */
+  .blob{
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.35;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .blob-1{ width:340px; height:340px; background: var(--green); top: -80px; left: -100px; animation: float1 14s ease-in-out infinite; }
+  .blob-2{ width:280px; height:280px; background: var(--purple); bottom: -60px; right: -80px; animation: float2 17s ease-in-out infinite; }
+  @keyframes float1{ 0%,100%{ transform: translate(0,0); } 50%{ transform: translate(40px, 50px); } }
+  @keyframes float2{ 0%,100%{ transform: translate(0,0); } 50%{ transform: translate(-30px, -40px); } }
 
+  .wrap{ max-width: 720px; margin: 0 auto; padding: 48px 20px 100px; position:relative; z-index:1; }
+
+  .mark{ display:flex; align-items:center; gap:10px; margin-bottom: 36px; animation: dropIn 0.6s ease both; }
+  .mark .dot{ width:12px; height:12px; border-radius:50%; background: var(--green); box-shadow: 0 0 0 5px rgba(182,255,61,0.25); }
+  .mark span{ font-weight: 800; font-size: 16px; color: #fff; letter-spacing: 0.01em; text-shadow: 0 1px 6px rgba(0,0,0,0.25); }
+
+  @keyframes dropIn{ from{ opacity:0; transform: translateY(-10px); } to{ opacity:1; transform: translateY(0); } }
+  @keyframes riseIn{ from{ opacity:0; transform: translateY(18px); } to{ opacity:1; transform: translateY(0); } }
+  @keyframes popIn{ 0%{ opacity:0; transform: scale(0.9); } 60%{ transform: scale(1.02); } 100%{ opacity:1; transform: scale(1); } }
+
+  .glass{
+    background: var(--glass);
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    border: 1px solid rgba(255,255,255,0.5);
+    border-radius: 20px;
+    box-shadow: 0 20px 60px -10px rgba(10,30,20,0.35);
+  }
+
+  #screen-input{ animation: riseIn 0.7s ease both; }
   #screen-input h1{
-    font-weight: 800;
-    font-size: clamp(30px, 4.6vw, 42px);
-    line-height: 1.12;
-    margin: 0 0 14px;
-    max-width: 15ch;
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: clamp(30px, 5vw, 44px);
+    line-height: 1.1;
+    margin: 0 0 12px;
+    color: #fff;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.3);
+    max-width: 16ch;
   }
   #screen-input h1 .accent{ color: var(--green); }
-  .sub{ font-size: 15.5px; color: var(--text-soft); max-width: 48ch; margin: 0 0 34px; }
+  .sub{ font-size: 15.5px; color: rgba(255,255,255,0.88); max-width: 46ch; margin: 0 0 30px; text-shadow: 0 1px 10px rgba(0,0,0,0.25); }
 
-  .field{ margin-bottom: 16px; }
-  .field label{ display:block; font-size: 13px; color: var(--text-soft); margin-bottom: 7px; }
-  .hint{ font-size: 12px; color: var(--text-soft); margin-top: 7px; line-height:1.5; }
-  .hint a{ color: var(--green); text-decoration:none; }
+  form.glass{ padding: 30px; }
+
+  form.no-card{ padding: 0; background: none; border: none; box-shadow: none; backdrop-filter: none; }
+
+  .field{ margin-bottom: 17px; }
+  .field label{ display:block; font-size: 13px; font-weight:600; color: #fff; margin-bottom: 7px; text-shadow: 0 1px 8px rgba(0,0,0,0.35); }
+  .hint{ font-size: 12px; color: rgba(255,255,255,0.82); margin-top: 7px; line-height:1.5; text-shadow: 0 1px 6px rgba(0,0,0,0.3); }
+  .hint a{ color: var(--green); text-decoration:none; font-weight:700; cursor:pointer; }
   .hint a:hover{ text-decoration:underline; }
   .row{ display:flex; gap: 12px; }
   .row .field{ flex:1; }
-  input[type=text], input[type=number]{
+  .token-row{ display:flex; gap:8px; }
+  .token-row input{ flex:1; }
+  .toggle-token{
+    flex-shrink:0; width:44px; border-radius:10px; border:1.5px solid rgba(255,255,255,0.25);
+    background: rgba(10,25,18,0.55); color:#fff; cursor:pointer; font-size:15px;
+  }
+  input[type=text], input[type=password], input[type=number]{
     width: 100%;
     padding: 12px 14px;
     font-size: 14.5px;
     font-family: 'Inter', sans-serif;
-    color: var(--text);
-    background: var(--panel-2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
+    color: #fff;
+    background: rgba(8,22,16,0.62);
+    border: 1.5px solid rgba(255,255,255,0.22);
+    border-radius: 10px;
     outline: none;
+    backdrop-filter: blur(6px);
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
   }
-  input::placeholder{ color: #55565f; }
-  input:focus{ border-color: var(--green-dim); box-shadow: 0 0 0 3px rgba(182,255,61,0.14); }
+  input::placeholder{ color: rgba(255,255,255,0.55); }
+  input:focus{
+    border-color: var(--green);
+    box-shadow: 0 0 0 4px rgba(182,255,61,0.28);
+    transform: translateY(-1px);
+  }
 
   button.cta{
-    margin-top: 20px;
+    margin-top: 18px;
     width: 100%;
-    padding: 15px;
+    padding: 16px;
     font-family: 'Inter', sans-serif;
-    font-size: 15px;
+    font-size: 15.5px;
     font-weight: 700;
     color: #0D1400;
-    background: var(--green);
+    background: linear-gradient(135deg, var(--green), #cfff7a);
     border: none;
-    border-radius: 8px;
+    border-radius: 12px;
     cursor: pointer;
     display:flex; align-items:center; justify-content:center; gap:8px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    box-shadow: 0 10px 24px -6px rgba(111,168,42,0.55);
   }
-  button.cta:hover:not(:disabled){ background: #c8ff6b; }
+  button.cta:hover:not(:disabled){ transform: translateY(-2px) scale(1.01); box-shadow: 0 14px 30px -6px rgba(111,168,42,0.65); }
+  button.cta:active:not(:disabled){ transform: scale(0.97); }
   button.cta:disabled{ opacity: 0.5; cursor: default; }
 
   .error{
     margin-top: 16px;
     padding: 13px 15px;
-    background: rgba(245,60,60,0.08);
-    border: 1px solid rgba(245,60,60,0.3);
-    border-radius: 8px;
-    color: #FF8A80;
+    background: rgba(255,90,80,0.12);
+    border: 1px solid rgba(220,60,50,0.35);
+    border-radius: 10px;
+    color: #8E2B22;
     font-size: 13.5px;
     display:none;
+    animation: popIn 0.35s ease both;
   }
   .error.active{ display:block; }
 
   #screen-loading{ display:none; }
-  #screen-loading.active{ display:block; }
-  .back{ font-size: 13px; color: var(--text-soft); cursor:pointer; margin-bottom: 20px; display:inline-block; }
-  #screen-loading h2{ font-weight: 800; font-size: 26px; margin: 0 0 8px; }
-  #screen-loading .sub{ margin-bottom: 30px; }
+  #screen-loading.active{ display:block; animation: riseIn 0.6s ease both; }
+  .back{ font-size: 13px; color: #fff; opacity:0.85; cursor:pointer; margin-bottom: 18px; display:inline-block; text-shadow: 0 1px 8px rgba(0,0,0,0.3); }
+  .back:hover{ opacity:1; }
+  .loading-card{ padding: 30px; }
+  #screen-loading h2{ font-family:'Fraunces',serif; font-weight: 600; font-size: 27px; margin: 0 0 8px; }
+  #screen-loading .sub{ color: var(--ink-soft); text-shadow:none; margin-bottom: 26px; }
 
   .steps{ display:flex; flex-direction: column; gap: 10px; }
   .step{
     display:flex; align-items:center; gap: 12px;
     padding: 14px 16px;
-    border-radius: 8px;
+    border-radius: 12px;
     border: 1px solid var(--border);
-    background: var(--panel-2);
-    opacity: 0.55;
+    background: rgba(255,255,255,0.5);
+    opacity: 0.6;
+    transition: all 0.35s ease;
   }
-  .step.current{ background: #EFF9DD; border-color: #EFF9DD; opacity: 1; }
+  .step.current{
+    background: linear-gradient(135deg, #eaffc2, #f5ffe0);
+    border-color: var(--green);
+    opacity: 1;
+    transform: scale(1.02);
+    box-shadow: 0 8px 20px -6px rgba(182,255,61,0.4);
+  }
   .step.done{ opacity: 0.85; }
   .step .icon{
-    width: 28px; height:28px; border-radius:50%;
-    background: var(--panel); color: var(--text-soft);
+    width: 30px; height:30px; border-radius:50%;
+    background: #fff; color: var(--ink-soft);
     display:flex; align-items:center; justify-content:center;
-    font-size: 13px; flex-shrink:0;
+    font-size: 13px; flex-shrink:0; font-weight:700;
+    transition: all 0.3s ease;
   }
-  .step.current .icon{ background: var(--green); color:#0D1400; }
-  .step.done .icon{ background: var(--green-dim); color:#0D1400; }
+  .step.current .icon{ background: var(--green); color:#0D1400; animation: pulseGlow 1.4s ease-in-out infinite; }
+  .step.done .icon{ background: var(--green-deep); color:#fff; }
+  @keyframes pulseGlow{ 0%,100%{ box-shadow: 0 0 0 0 rgba(182,255,61,0.55); } 50%{ box-shadow: 0 0 0 8px rgba(182,255,61,0); } }
   .step-text{ flex:1; }
-  .step-title{ font-size: 14px; font-weight: 600; color: var(--text); }
-  .step.current .step-title{ color: #14210a; }
-  .step-desc{ font-size: 12.5px; color: var(--text-soft); }
-  .step.current .step-desc{ color: #3b4a2a; }
+  .step-title{ font-size: 14px; font-weight: 700; color: var(--ink); }
+  .step-desc{ font-size: 12.5px; color: var(--ink-soft); }
 
-  .elapsed{ margin-top: 22px; font-size: 13px; color: var(--text-soft); }
+  .elapsed{ margin-top: 20px; font-size: 13px; color: var(--ink-soft); text-align:center; }
 
   #screen-results{ display:none; }
   #screen-results.active{ display:block; }
-  .result-topbar{ display:flex; align-items:center; justify-content:space-between; margin-bottom: 4px; }
-  .result-title{ font-weight: 800; font-size: 24px; }
+  .result-card{ padding: 30px; animation: riseIn 0.5s ease both; }
+  .result-topbar{ display:flex; align-items:center; justify-content:space-between; margin-bottom: 4px; flex-wrap:wrap; gap:10px; }
+  .result-title{ font-family:'Fraunces',serif; font-weight: 600; font-size: 25px; }
   .badge-complete{
-    font-size: 12px; font-weight:600; color: #0D1400;
-    background: var(--green); padding: 5px 11px; border-radius: 999px;
+    font-size: 12px; font-weight:700; color: #0D1400;
+    background: var(--green); padding: 6px 13px; border-radius: 999px;
+    animation: popIn 0.5s ease both;
   }
-  .result-sub{ font-size: 14px; color: var(--text-soft); margin-bottom: 26px; }
+  .result-sub{ font-size: 14px; color: var(--ink-soft); margin-bottom: 24px; }
 
   .top-grid{ display:grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
-  .card{ background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 18px; }
-  .card-label{ font-size: 12.5px; color: var(--text-soft); margin-bottom: 8px; }
-  .card-big{ font-size: 30px; font-weight: 800; }
-  .card-big .of100{ font-size: 14px; color: var(--text-soft); font-weight:500; }
-  .opp-pill{ display:inline-block; font-size: 13px; font-weight:700; padding:3px 0; }
-  .opp-pill.high{ color: var(--green); }
+  .card{
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    animation: riseIn 0.5s ease both;
+  }
+  .card:hover{ transform: translateY(-3px); box-shadow: 0 12px 26px -10px rgba(18,38,31,0.25); }
+  .card-label{ font-size: 12.5px; color: var(--ink-soft); font-weight:600; margin-bottom: 8px; }
+  .card-big{ font-family:'Fraunces',serif; font-size: 32px; font-weight: 600; }
+  .card-big .of100{ font-size: 14px; color: var(--ink-soft); font-weight:500; font-family:'Inter',sans-serif; }
+  .opp-pill{ display:inline-block; font-size: 13.5px; font-weight:700; padding:3px 0; }
+  .opp-pill.high{ color: var(--green-deep); }
   .opp-pill.medium{ color: var(--orange); }
-  .opp-pill.low{ color: var(--text-soft); }
-  .opp-note{ font-size: 12.5px; color: var(--text-soft); margin-top:4px; }
+  .opp-pill.low{ color: var(--ink-soft); }
+  .opp-note{ font-size: 12.5px; color: var(--ink-soft); margin-top:4px; }
 
   .scores3{ display:grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 12px; }
-  .score-bar-track{ height:6px; background: var(--panel-2); border-radius: 3px; margin-top:10px; overflow:hidden; }
-  .score-bar-fill{ height:100%; border-radius:3px; }
-  .fill-green{ background: var(--green); }
-  .fill-orange{ background: var(--orange); }
-  .fill-purple{ background: var(--purple); }
+  .score-bar-track{ height:7px; background: #EEF1EC; border-radius: 4px; margin-top:10px; overflow:hidden; }
+  .score-bar-fill{ height:100%; border-radius:4px; width:0%; transition: width 1.1s cubic-bezier(.2,.8,.2,1); }
+  .fill-green{ background: linear-gradient(90deg, var(--green-deep), var(--green)); }
+  .fill-orange{ background: linear-gradient(90deg, #d68a13, var(--orange)); }
+  .fill-purple{ background: linear-gradient(90deg, #7c5cc4, var(--purple)); }
 
-  .supply-card{ background: var(--panel); border:1px solid var(--border); border-radius:10px; padding:20px; margin-bottom: 30px; }
-  .supply-title{ font-size:13px; color: var(--text-soft); margin-bottom:16px; }
-  .supply-blocks{ display:flex; align-items:flex-end; gap: 30px; }
+  .supply-card{ background: #fff; border:1px solid var(--border); border-radius:14px; padding:22px; margin-bottom: 28px; animation: riseIn 0.6s ease both; }
+  .supply-title{ font-size:13px; font-weight:600; color: var(--ink-soft); margin-bottom:16px; }
+  .supply-blocks{ display:flex; align-items:flex-end; gap: 28px; }
   .sblock{ text-align:center; }
-  .sblock .n{ font-size: 20px; font-weight:800; margin-bottom:6px; }
-  .sblock .swatch{ width: 64px; height: 64px; border-radius:8px; margin-bottom:8px; }
-  .swatch.demand{ background: var(--green); }
-  .swatch.supply{ background: var(--purple); }
-  .sblock .lbl{ font-size:12px; color: var(--text-soft); }
-  .supply-note{ font-size: 13.5px; color: var(--text-soft); flex:1; align-self:center; }
+  .sblock .n{ font-family:'Fraunces',serif; font-size: 21px; font-weight:600; margin-bottom:8px; }
+  .sblock .swatch{ width: 60px; border-radius:10px; margin-bottom:8px; height:6px; transition: height 1s cubic-bezier(.2,.8,.2,1) 0.15s; }
+  .swatch.demand{ background: linear-gradient(180deg, var(--green), var(--green-deep)); }
+  .swatch.supply{ background: linear-gradient(180deg, var(--purple), #7c5cc4); }
+  .sblock .lbl{ font-size:12px; color: var(--ink-soft); }
+  .supply-note{ font-size: 13.5px; color: var(--ink-soft); flex:1; align-self:center; }
 
-  .opps-head{ font-weight:800; font-size:18px; margin: 6px 0 14px; }
-  .opp{ background: var(--panel); border:1px solid var(--border); border-radius:10px; padding:16px 18px; margin-bottom:10px; }
+  .opps-head{ font-family:'Fraunces',serif; font-weight:600; font-size:19px; margin: 8px 0 14px; }
+
+  .rec-card{
+    background: linear-gradient(135deg, #eaffc2, #f7fff0);
+    border: 1px solid rgba(111,168,42,0.35);
+    border-radius: 14px;
+    padding: 22px;
+    margin-bottom: 28px;
+    animation: riseIn 0.6s ease both;
+  }
+  .rec-title{ font-family:'Fraunces',serif; font-weight:600; font-size:17px; margin-bottom:6px; }
+  .rec-summary{ font-size:14px; color: var(--ink); margin-bottom:14px; }
+  .rec-list{ margin:0; padding-left:20px; }
+  .rec-list li{ font-size:13.5px; color: var(--ink-soft); margin-bottom:7px; line-height:1.5; }
+  .rec-list li::marker{ color: var(--green-deep); }
+  .opp{
+    background: #fff; border:1px solid var(--border); border-radius:14px;
+    padding:16px 18px; margin-bottom:10px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    animation: riseIn 0.45s ease both;
+  }
+  .opp:hover{ transform: translateY(-2px); box-shadow: 0 10px 22px -10px rgba(18,38,31,0.2); }
   .opp-top{ display:flex; justify-content:space-between; gap:10px; align-items:baseline; }
-  .opp-need{ font-size: 14.5px; font-weight:600; }
-  .opp-count{ font-size: 12px; color: var(--green); font-weight:700; white-space:nowrap; }
-  .evid{ margin-top:9px; padding-top:9px; border-top:1px solid var(--border); }
-  .evid-item{ font-size:12.5px; color: var(--text-soft); margin-bottom:5px; }
-  .evid-item a{ color: var(--text); text-decoration:none; border-bottom:1px solid var(--border); }
-  .evid-item a:hover{ border-color: var(--text); }
+  .opp-need{ font-size: 14.5px; font-weight:700; }
+  .opp-count{ font-size: 12px; color: var(--green-deep); font-weight:700; white-space:nowrap; background:#EFFAD6; padding:3px 9px; border-radius:999px; }
+  .evid{ margin-top:10px; padding-top:10px; border-top:1px solid var(--border); }
+  .evid-item{ font-size:12.5px; color: var(--ink-soft); margin-bottom:6px; }
+  .evid-item a{ color: var(--ink); text-decoration:none; border-bottom:1px solid var(--border); font-weight:600; }
+  .evid-item a:hover{ border-color: var(--ink); }
 
-  .restart{ margin-top: 26px; font-size:13px; color: var(--text-soft); text-align:center; cursor:pointer; }
-  .restart:hover{ color: var(--text); }
+  .restart{
+    margin-top: 24px; font-size:13.5px; font-weight:600; color: var(--green-deep);
+    text-align:center; cursor:pointer; transition: transform 0.15s ease;
+  }
+  .restart:hover{ transform: scale(1.03); }
+
+  @media (max-width: 520px){
+    .row{ flex-direction: column; gap:0; }
+    .top-grid, .scores3{ grid-template-columns: 1fr; }
+  }
 </style>
 </head>
 <body>
+
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+
 <div class="wrap">
 
   <div class="mark"><span class="dot"></span><span>Gapify</span></div>
@@ -190,11 +298,14 @@
     <h1>Find the gap in your market <span class="accent">today.</span></h1>
     <p class="sub">Find unmet needs, emerging demand, and overlooked opportunities before you build.</p>
 
-    <form id="gapify-form">
+    <form id="gapify-form" class="no-card">
       <div class="field">
         <label for="token">Your Apify API token</label>
-        <input type="password" id="token" placeholder="apify_api_..." autocomplete="off" required>
-        <div class="hint">Stays in your browser only — never saved, never sent anywhere but Apify. Get yours free at <a href="https://console.apify.com/settings/integrations" target="_blank" rel="noopener">console.apify.com</a>.</div>
+        <div class="token-row">
+          <input type="password" id="token" placeholder="apify_api_..." autocomplete="off" value="PASTE_YOUR_TOKEN_HERE_FOR_DEMO" required>
+          <button type="button" class="toggle-token" id="toggle-token" title="Show/hide token">👁</button>
+        </div>
+        <div class="hint">Prefilled with a demo token slot for this presentation — clear it and paste your own if you'd rather use your own account. Get a free token at <a href="https://console.apify.com/settings/integrations" target="_blank" rel="noopener">console.apify.com</a>.</div>
       </div>
       <div class="field">
         <label for="industry">What market are you exploring?</label>
@@ -222,33 +333,35 @@
 
   <div id="screen-loading">
     <span class="back" id="back-link">← Back to research</span>
-    <h2>Gapify is researching…</h2>
-    <p class="sub">We're diving deep into the market to find real opportunities. This usually takes 2–5 minutes.</p>
+    <div class="glass loading-card">
+      <h2>Gapify is researching…</h2>
+      <p class="sub">We're diving deep into the market to find real opportunities. This usually takes 2–5 minutes.</p>
 
-    <div class="steps">
-      <div class="step" id="step-1">
-        <div class="icon">1</div>
-        <div class="step-text">
-          <div class="step-title">Searching market signals</div>
-          <div class="step-desc">Scanning conversations, demand and customer behaviour…</div>
+      <div class="steps">
+        <div class="step" id="step-1">
+          <div class="icon">1</div>
+          <div class="step-text">
+            <div class="step-title">Searching market signals</div>
+            <div class="step-desc">Scanning conversations, demand and customer behaviour…</div>
+          </div>
+        </div>
+        <div class="step" id="step-2">
+          <div class="icon">2</div>
+          <div class="step-text">
+            <div class="step-title">Grouping repeated demand</div>
+            <div class="step-desc">Clustering similar requests to find what really repeats…</div>
+          </div>
+        </div>
+        <div class="step" id="step-3">
+          <div class="icon">3</div>
+          <div class="step-text">
+            <div class="step-title">Checking existing competition</div>
+            <div class="step-desc">Counting who already serves this need nearby…</div>
+          </div>
         </div>
       </div>
-      <div class="step" id="step-2">
-        <div class="icon">2</div>
-        <div class="step-text">
-          <div class="step-title">Grouping repeated demand</div>
-          <div class="step-desc">Clustering similar requests to find what really repeats…</div>
-        </div>
-      </div>
-      <div class="step" id="step-3">
-        <div class="icon">3</div>
-        <div class="step-text">
-          <div class="step-title">Checking existing competition</div>
-          <div class="step-desc">Counting who already serves this need nearby…</div>
-        </div>
-      </div>
+      <div class="elapsed" id="elapsed"></div>
     </div>
-    <div class="elapsed" id="elapsed"></div>
   </div>
 
   <div id="screen-results"></div>
@@ -257,6 +370,18 @@
 
 <script>
 const ACTOR_ID = 'goodluckchioma~gapify-actor'; // username~actor-name
+
+/* ======================================================
+   The token field above is prefilled with a placeholder.
+   Before you demo live, replace PASTE_YOUR_TOKEN_HERE_FOR_DEMO
+   in the HTML with your real token. Remove it again (set back
+   to empty or the placeholder) before pushing this file publicly.
+   ====================================================== */
+
+document.getElementById('toggle-token').addEventListener('click', () => {
+  const tokenInput = document.getElementById('token');
+  tokenInput.type = tokenInput.type === 'password' ? 'text' : 'password';
+});
 
 const screenInput = document.getElementById('screen-input');
 const screenLoading = document.getElementById('screen-loading');
@@ -338,6 +463,49 @@ function opportunityLevel(gapScore){
   return { label: 'Low', cls: 'low', note: 'Supply already covers this well' };
 }
 
+function buildRecommendations({ gap, demand, competition, frustration, supply, industry, location }){
+  const actions = [];
+  let summary = '';
+
+  if (gap >= 50) {
+    summary = `This looks like a strong opportunity. Demand for ${industry} in ${location} is running well ahead of what's currently on offer, and people are visibly frustrated with the current options.`;
+    actions.push(`Talk to 8–10 people who left the frustrated comments above before building anything — confirm the pain is real and find out what they've already tried.`);
+    actions.push('Build a small, testable version first (a landing page, a WhatsApp catalog, a single product) rather than a full launch.');
+    actions.push('Price to match the frustration: if people are already paying more elsewhere for a worse fit, you can likely charge fairly and still win them over.');
+    actions.push(`Watch the existing businesses in this space closely — a clear gap like this rarely stays open for long once it's visible.`);
+  } else if (gap >= 20) {
+    summary = `There's a real but moderate opportunity here. Some unmet demand exists in ${industry} in ${location}, but it's not overwhelming — worth a closer look before committing serious resources.`;
+    actions.push('Narrow the idea to the specific complaint mentioned most often above, rather than trying to serve the whole category.');
+    actions.push('Run a small pilot or pre-order test before investing in inventory, staff, or a full build.');
+    actions.push('Check pricing and reviews of the existing businesses below to find exactly where they fall short.');
+  } else {
+    summary = `Supply already covers ${industry} reasonably well in ${location}. This doesn't mean the idea is dead, but a generic version of it is unlikely to stand out.`;
+    actions.push('Look for a specific underserved segment inside this market (a location, a price point, an audience) rather than competing head on.');
+    actions.push('Consider testing a nearby city or a closely related category where the gap score is higher.');
+    actions.push('If you still believe in this market, differentiate sharply on one dimension — price, speed, quality, or trust — instead of copying what already exists.');
+  }
+
+  if (frustration >= 60) {
+    actions.push(`Customer frustration is high here — read the actual complaints above closely, they're telling you exactly what to fix.`);
+  }
+  if (supply > 0 && competition < 30) {
+    actions.push(`Only ${supply} existing businesses were found for this search — there may be room even without a fully unique idea.`);
+  }
+
+  return { summary, actions };
+}
+
+function countUp(el, target, duration){
+  const start = performance.now();
+  function tick(now){
+    const p = Math.min(1, (now - start) / duration);
+    const eased = 1 - Math.pow(1 - p, 3);
+    el.textContent = Math.round(target * eased);
+    if(p < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
 function renderResults(data){
   const demand = data.demandScore ?? 0;
   const competition = data.competitionScore ?? 0;
@@ -347,6 +515,7 @@ function renderResults(data){
   const totalSignals = data.totalSignalsFound ?? 0;
   const opportunities = data.opportunities || [];
   const level = opportunityLevel(gap);
+  const rec = buildRecommendations({ gap, demand, competition, frustration, supply, industry: data.industry, location: data.location });
 
   const maxBar = Math.max(demand, Math.min(100, supply), 1);
   const demandH = Math.max(18, Math.round((demand / maxBar) * 64));
@@ -354,14 +523,14 @@ function renderResults(data){
 
   let oppHtml = '';
   if(opportunities.length === 0){
-    oppHtml = '<p style="font-size:13px;color:var(--text-soft);">No strongly repeated demand pattern stood out from this batch — try more signals, or a different phrasing of the market.</p>';
+    oppHtml = '<p style="font-size:13px;color:var(--ink-soft);">No strongly repeated demand pattern stood out from this batch — try more signals, or a different phrasing of the market.</p>';
   } else {
-    oppHtml = opportunities.slice(0,8).map(o => {
+    oppHtml = opportunities.slice(0,8).map((o, i) => {
       const evid = (o.evidence || []).map(e => {
         const src = e.url ? `<a href="${e.url}" target="_blank" rel="noopener">${e.source || 'source'}</a>` : (e.source || 'source');
         return `<div class="evid-item">${(e.text||'').slice(0,140)} — ${src}</div>`;
       }).join('');
-      return `<div class="opp">
+      return `<div class="opp" style="animation-delay:${i*0.06}s">
         <div class="opp-top">
           <div class="opp-need">${o.need}</div>
           <div class="opp-count">${o.mentionCount} mention${o.mentionCount===1?'':'s'}</div>
@@ -372,63 +541,73 @@ function renderResults(data){
   }
 
   screenResults.innerHTML = `
-    <div class="result-topbar">
-      <div class="result-title">Research Overview</div>
-      <div class="badge-complete">✓ Analysis complete</div>
-    </div>
-    <div class="result-sub">${data.industry} · ${data.location}${data.targetAudience ? ' · ' + data.targetAudience : ''}</div>
+    <div class="result-card glass">
+      <div class="result-topbar">
+        <div class="result-title">Research Overview</div>
+        <div class="badge-complete">✓ Analysis complete</div>
+      </div>
+      <div class="result-sub">${data.industry} · ${data.location}${data.targetAudience ? ' · ' + data.targetAudience : ''}</div>
 
-    <div class="top-grid">
-      <div class="card">
-        <div class="card-label">Total signals found</div>
-        <div class="card-big">${totalSignals}</div>
-      </div>
-      <div class="card">
-        <div class="card-label">Opportunity level</div>
-        <div class="opp-pill ${level.cls}">${level.label}</div>
-        <div class="opp-note">${level.note}</div>
-      </div>
-    </div>
-
-    <div class="scores3">
-      <div class="card">
-        <div class="card-label">Demand</div>
-        <div class="card-big">${demand}<span class="of100">/100</span></div>
-        <div class="score-bar-track"><div class="score-bar-fill fill-green" style="width:${demand}%"></div></div>
-      </div>
-      <div class="card">
-        <div class="card-label">Competition</div>
-        <div class="card-big">${competition}<span class="of100">/100</span></div>
-        <div class="score-bar-track"><div class="score-bar-fill fill-orange" style="width:${competition}%"></div></div>
-      </div>
-      <div class="card">
-        <div class="card-label">Customer frustration</div>
-        <div class="card-big">${frustration}<span class="of100">/100</span></div>
-        <div class="score-bar-track"><div class="score-bar-fill fill-purple" style="width:${frustration}%"></div></div>
-      </div>
-    </div>
-
-    <div class="supply-card">
-      <div class="supply-title">Demand vs Supply</div>
-      <div class="supply-blocks">
-        <div class="sblock">
-          <div class="n">${demand}</div>
-          <div class="swatch demand" style="height:${demandH}px;"></div>
-          <div class="lbl">Demand</div>
+      <div class="top-grid">
+        <div class="card" style="animation-delay:0.05s">
+          <div class="card-label">Total signals found</div>
+          <div class="card-big" id="num-signals">0</div>
         </div>
-        <div class="sblock">
-          <div class="n">${supply}</div>
-          <div class="swatch supply" style="height:${supplyH}px;"></div>
-          <div class="lbl">Supply</div>
+        <div class="card" style="animation-delay:0.1s">
+          <div class="card-label">Opportunity level</div>
+          <div class="opp-pill ${level.cls}">${level.label}</div>
+          <div class="opp-note">${level.note}</div>
         </div>
-        <div class="supply-note">${demand > supply ? 'Demand is significantly higher than supply in this market.' : 'Supply looks reasonably matched to demand here.'}</div>
       </div>
+
+      <div class="scores3">
+        <div class="card" style="animation-delay:0.15s">
+          <div class="card-label">Demand</div>
+          <div class="card-big"><span id="num-demand">0</span><span class="of100">/100</span></div>
+          <div class="score-bar-track"><div class="score-bar-fill fill-green" id="bar-demand"></div></div>
+        </div>
+        <div class="card" style="animation-delay:0.2s">
+          <div class="card-label">Competition</div>
+          <div class="card-big"><span id="num-competition">0</span><span class="of100">/100</span></div>
+          <div class="score-bar-track"><div class="score-bar-fill fill-orange" id="bar-competition"></div></div>
+        </div>
+        <div class="card" style="animation-delay:0.25s">
+          <div class="card-label">Customer frustration</div>
+          <div class="card-big"><span id="num-frustration">0</span><span class="of100">/100</span></div>
+          <div class="score-bar-track"><div class="score-bar-fill fill-purple" id="bar-frustration"></div></div>
+        </div>
+      </div>
+
+      <div class="supply-card">
+        <div class="supply-title">Demand vs Supply</div>
+        <div class="supply-blocks">
+          <div class="sblock">
+            <div class="n" id="num-demand2">0</div>
+            <div class="swatch demand" id="swatch-demand"></div>
+            <div class="lbl">Demand</div>
+          </div>
+          <div class="sblock">
+            <div class="n" id="num-supply">0</div>
+            <div class="swatch supply" id="swatch-supply"></div>
+            <div class="lbl">Supply</div>
+          </div>
+          <div class="supply-note">${demand > supply ? 'Demand is significantly higher than supply in this market.' : 'Supply looks reasonably matched to demand here.'}</div>
+        </div>
+      </div>
+
+      <div class="rec-card">
+        <div class="rec-title">Our recommendation</div>
+        <div class="rec-summary">${rec.summary}</div>
+        <ul class="rec-list">
+          ${rec.actions.map(a => `<li>${a}</li>`).join('')}
+        </ul>
+      </div>
+
+      <div class="opps-head">What people are actually asking for</div>
+      ${oppHtml}
+
+      <div class="restart" id="restart-link">Run another search</div>
     </div>
-
-    <div class="opps-head">What people are actually asking for</div>
-    ${oppHtml}
-
-    <div class="restart" id="restart-link">Run another search</div>
   `;
 
   document.getElementById('restart-link').addEventListener('click', () => {
@@ -436,6 +615,21 @@ function renderResults(data){
   });
 
   showScreen('results');
+
+  // trigger animated fills and count-ups after paint
+  requestAnimationFrame(() => {
+    countUp(document.getElementById('num-signals'), totalSignals, 700);
+    countUp(document.getElementById('num-demand'), demand, 900);
+    countUp(document.getElementById('num-competition'), competition, 900);
+    countUp(document.getElementById('num-frustration'), frustration, 900);
+    countUp(document.getElementById('num-demand2'), demand, 900);
+    countUp(document.getElementById('num-supply'), supply, 900);
+    document.getElementById('bar-demand').style.width = demand + '%';
+    document.getElementById('bar-competition').style.width = competition + '%';
+    document.getElementById('bar-frustration').style.width = frustration + '%';
+    document.getElementById('swatch-demand').style.height = demandH + 'px';
+    document.getElementById('swatch-supply').style.height = supplyH + 'px';
+  });
 }
 
 form.addEventListener('submit', async (e) => {
