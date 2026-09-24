@@ -1,6 +1,6 @@
 import { log } from 'apify';
 
-const SIMILARITY_THRESHOLD = 0.72; // lowered from 0.8
+const SIMILARITY_THRESHOLD = 0.6; // tuned from real data: top pair scored 0.607
 const EMBEDDING_MODEL = 'openai/text-embedding-3-small';
 const PROXY_URL = 'https://openrouter.apify.actor/api/v1/embeddings';
 
