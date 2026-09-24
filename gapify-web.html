@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gapify — Find the gap in your market</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0A0A0D;
+    --panel: #16171D;
+    --panel-2: #1D1E26;
+    --border: #2A2B34;
+    --text: #F4F4F2;
+    --text-soft: #9A9AA6;
+    --green: #B6FF3D;
+    --green-dim: #7FB82A;
+    --orange: #F5A623;
+    --purple: #B39DDB;
+  }
+  *{ box-sizing: border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap{ max-width: 720px; margin: 0 auto; padding: 48px 24px 100px; }
+
+  .mark{ display:flex; align-items:center; gap:8px; margin-bottom: 44px; }
+  .mark .dot{ width:10px; height:10px; border-radius:50%; background: var(--green); }
+  .mark span{ font-weight: 700; font-size: 15px; letter-spacing: 0.01em; }
+
+  #screen-input h1{
+    font-weight: 800;
+    font-size: clamp(30px, 4.6vw, 42px);
+    line-height: 1.12;
+    margin: 0 0 14px;
+    max-width: 15ch;
+  }
+  #screen-input h1 .accent{ color: var(--green); }
+  .sub{ font-size: 15.5px; color: var(--text-soft); max-width: 48ch; margin: 0 0 34px; }
+
+  .field{ margin-bottom: 16px; }
+  .field label{ display:block; font-size: 13px; color: var(--text-soft); margin-bottom: 7px; }
+  .hint{ font-size: 12px; color: var(--text-soft); margin-top: 7px; line-height:1.5; }
+  .hint a{ color: var(--green); text-decoration:none; }
+  .hint a:hover{ text-decoration:underline; }
+  .row{ display:flex; gap: 12px; }
+  .row .field{ flex:1; }
+  input[type=text], input[type=number]{
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 14.5px;
+    font-family: 'Inter', sans-serif;
+    color: var(--text);
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    outline: none;
+  }
+  input::placeholder{ color: #55565f; }
+  input:focus{ border-color: var(--green-dim); box-shadow: 0 0 0 3px rgba(182,255,61,0.14); }
+
+  button.cta{
+    margin-top: 20px;
+    width: 100%;
+    padding: 15px;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: #0D1400;
+    background: var(--green);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+  }
+  button.cta:hover:not(:disabled){ background: #c8ff6b; }
+  button.cta:disabled{ opacity: 0.5; cursor: default; }
+
+  .error{
+    margin-top: 16px;
+    padding: 13px 15px;
+    background: rgba(245,60,60,0.08);
+    border: 1px solid rgba(245,60,60,0.3);
+    border-radius: 8px;
+    color: #FF8A80;
+    font-size: 13.5px;
+    display:none;
+  }
+  .error.active{ display:block; }
+
+  #screen-loading{ display:none; }
+  #screen-loading.active{ display:block; }
+  .back{ font-size: 13px; color: var(--text-soft); cursor:pointer; margin-bottom: 20px; display:inline-block; }
+  #screen-loading h2{ font-weight: 800; font-size: 26px; margin: 0 0 8px; }
+  #screen-loading .sub{ margin-bottom: 30px; }
+
+  .steps{ display:flex; flex-direction: column; gap: 10px; }
+  .step{
+    display:flex; align-items:center; gap: 12px;
+    padding: 14px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--panel-2);
+    opacity: 0.55;
+  }
+  .step.current{ background: #EFF9DD; border-color: #EFF9DD; opacity: 1; }
+  .step.done{ opacity: 0.85; }
+  .step .icon{
+    width: 28px; height:28px; border-radius:50%;
+    background: var(--panel); color: var(--text-soft);
+    display:flex; align-items:center; justify-content:center;
+    font-size: 13px; flex-shrink:0;
+  }
+  .step.current .icon{ background: var(--green); color:#0D1400; }
+  .step.done .icon{ background: var(--green-dim); color:#0D1400; }
+  .step-text{ flex:1; }
+  .step-title{ font-size: 14px; font-weight: 600; color: var(--text); }
+  .step.current .step-title{ color: #14210a; }
+  .step-desc{ font-size: 12.5px; color: var(--text-soft); }
+  .step.current .step-desc{ color: #3b4a2a; }
+
+  .elapsed{ margin-top: 22px; font-size: 13px; color: var(--text-soft); }
+
+  #screen-results{ display:none; }
+  #screen-results.active{ display:block; }
+  .result-topbar{ display:flex; align-items:center; justify-content:space-between; margin-bottom: 4px; }
+  .result-title{ font-weight: 800; font-size: 24px; }
+  .badge-complete{
+    font-size: 12px; font-weight:600; color: #0D1400;
+    background: var(--green); padding: 5px 11px; border-radius: 999px;
+  }
+  .result-sub{ font-size: 14px; color: var(--text-soft); margin-bottom: 26px; }
+
+  .top-grid{ display:grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .card{ background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 18px; }
+  .card-label{ font-size: 12.5px; color: var(--text-soft); margin-bottom: 8px; }
+  .card-big{ font-size: 30px; font-weight: 800; }
+  .card-big .of100{ font-size: 14px; color: var(--text-soft); font-weight:500; }
+  .opp-pill{ display:inline-block; font-size: 13px; font-weight:700; padding:3px 0; }
+  .opp-pill.high{ color: var(--green); }
+  .opp-pill.medium{ color: var(--orange); }
+  .opp-pill.low{ color: var(--text-soft); }
+  .opp-note{ font-size: 12.5px; color: var(--text-soft); margin-top:4px; }
+
+  .scores3{ display:grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 12px; }
+  .score-bar-track{ height:6px; background: var(--panel-2); border-radius: 3px; margin-top:10px; overflow:hidden; }
+  .score-bar-fill{ height:100%; border-radius:3px; }
+  .fill-green{ background: var(--green); }
+  .fill-orange{ background: var(--orange); }
+  .fill-purple{ background: var(--purple); }
+
+  .supply-card{ background: var(--panel); border:1px solid var(--border); border-radius:10px; padding:20px; margin-bottom: 30px; }
+  .supply-title{ font-size:13px; color: var(--text-soft); margin-bottom:16px; }
+  .supply-blocks{ display:flex; align-items:flex-end; gap: 30px; }
+  .sblock{ text-align:center; }
+  .sblock .n{ font-size: 20px; font-weight:800; margin-bottom:6px; }
+  .sblock .swatch{ width: 64px; height: 64px; border-radius:8px; margin-bottom:8px; }
+  .swatch.demand{ background: var(--green); }
+  .swatch.supply{ background: var(--purple); }
+  .sblock .lbl{ font-size:12px; color: var(--text-soft); }
+  .supply-note{ font-size: 13.5px; color: var(--text-soft); flex:1; align-self:center; }
+
+  .opps-head{ font-weight:800; font-size:18px; margin: 6px 0 14px; }
+  .opp{ background: var(--panel); border:1px solid var(--border); border-radius:10px; padding:16px 18px; margin-bottom:10px; }
+  .opp-top{ display:flex; justify-content:space-between; gap:10px; align-items:baseline; }
+  .opp-need{ font-size: 14.5px; font-weight:600; }
+  .opp-count{ font-size: 12px; color: var(--green); font-weight:700; white-space:nowrap; }
+  .evid{ margin-top:9px; padding-top:9px; border-top:1px solid var(--border); }
+  .evid-item{ font-size:12.5px; color: var(--text-soft); margin-bottom:5px; }
+  .evid-item a{ color: var(--text); text-decoration:none; border-bottom:1px solid var(--border); }
+  .evid-item a:hover{ border-color: var(--text); }
+
+  .restart{ margin-top: 26px; font-size:13px; color: var(--text-soft); text-align:center; cursor:pointer; }
+  .restart:hover{ color: var(--text); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="mark"><span class="dot"></span><span>Gapify</span></div>
+
+  <div id="screen-input">
+    <h1>Find the gap in your market <span class="accent">today.</span></h1>
+    <p class="sub">Find unmet needs, emerging demand, and overlooked opportunities before you build.</p>
+
+    <form id="gapify-form">
+      <div class="field">
+        <label for="token">Your Apify API token</label>
+        <input type="password" id="token" placeholder="apify_api_..." autocomplete="off" required>
+        <div class="hint">Stays in your browser only — never saved, never sent anywhere but Apify. Get yours free at <a href="https://console.apify.com/settings/integrations" target="_blank" rel="noopener">console.apify.com</a>.</div>
+      </div>
+      <div class="field">
+        <label for="industry">What market are you exploring?</label>
+        <input type="text" id="industry" placeholder="e.g. Fashion, Fintech, Education, Food" required>
+      </div>
+      <div class="field">
+        <label for="audience">Who is your target audience?</label>
+        <input type="text" id="audience" placeholder="e.g. University students, small business owners, Gen Z">
+      </div>
+      <div class="row">
+        <div class="field">
+          <label for="location">Where is your target market?</label>
+          <input type="text" id="location" placeholder="City, e.g. Lagos" required>
+        </div>
+        <div class="field">
+          <label for="country">Country</label>
+          <input type="text" id="country" placeholder="e.g. Nigeria" required>
+        </div>
+      </div>
+
+      <button type="submit" class="cta" id="submit-btn">Find the gap →</button>
+      <div class="error" id="error"></div>
+    </form>
+  </div>
+
+  <div id="screen-loading">
+    <span class="back" id="back-link">← Back to research</span>
+    <h2>Gapify is researching…</h2>
+    <p class="sub">We're diving deep into the market to find real opportunities. This usually takes 2–5 minutes.</p>
+
+    <div class="steps">
+      <div class="step" id="step-1">
+        <div class="icon">1</div>
+        <div class="step-text">
+          <div class="step-title">Searching market signals</div>
+          <div class="step-desc">Scanning conversations, demand and customer behaviour…</div>
+        </div>
+      </div>
+      <div class="step" id="step-2">
+        <div class="icon">2</div>
+        <div class="step-text">
+          <div class="step-title">Grouping repeated demand</div>
+          <div class="step-desc">Clustering similar requests to find what really repeats…</div>
+        </div>
+      </div>
+      <div class="step" id="step-3">
+        <div class="icon">3</div>
+        <div class="step-text">
+          <div class="step-title">Checking existing competition</div>
+          <div class="step-desc">Counting who already serves this need nearby…</div>
+        </div>
+      </div>
+    </div>
+    <div class="elapsed" id="elapsed"></div>
+  </div>
+
+  <div id="screen-results"></div>
+
+</div>
+
+<script>
+const ACTOR_ID = 'goodluckchioma~gapify-actor'; // username~actor-name
+
+const screenInput = document.getElementById('screen-input');
+const screenLoading = document.getElementById('screen-loading');
+const screenResults = document.getElementById('screen-results');
+const form = document.getElementById('gapify-form');
+const submitBtn = document.getElementById('submit-btn');
+const errorEl = document.getElementById('error');
+const elapsedEl = document.getElementById('elapsed');
+const backLink = document.getElementById('back-link');
+
+function showScreen(name){
+  screenInput.style.display = name === 'input' ? 'block' : 'none';
+  screenLoading.classList.toggle('active', name === 'loading');
+  screenResults.classList.toggle('active', name === 'results');
+}
+
+function setStep(n){
+  for(let i=1;i<=3;i++){
+    const el = document.getElementById('step-'+i);
+    el.classList.remove('current','done');
+    if(i < n) el.classList.add('done');
+    if(i === n) el.classList.add('current');
+  }
+}
+
+function clearError(){ errorEl.classList.remove('active'); errorEl.textContent=''; }
+function showError(msg){ errorEl.textContent = msg; errorEl.classList.add('active'); }
+
+backLink.addEventListener('click', () => showScreen('input'));
+
+async function runActor(token, input){
+  const startRes = await fetch(`https://api.apify.com/v2/acts/${ACTOR_ID}/runs?token=${encodeURIComponent(token)}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(input),
+  });
+  if(!startRes.ok){
+    const t = await startRes.text();
+    throw new Error(`Could not start the Actor (${startRes.status}). ${t.slice(0,200)}`);
+  }
+  const startData = await startRes.json();
+  const runId = startData.data.id;
+
+  const started = Date.now();
+  setStep(1);
+
+  while(true){
+    await new Promise(r => setTimeout(r, 3500));
+    const elapsed = Math.round((Date.now() - started) / 1000);
+    elapsedEl.textContent = `${elapsed}s elapsed`;
+
+    if(elapsed > 90) setStep(3);
+    else if(elapsed > 40) setStep(2);
+
+    const pollRes = await fetch(`https://api.apify.com/v2/actor-runs/${runId}?token=${encodeURIComponent(token)}`);
+    if(!pollRes.ok) throw new Error('Lost connection while checking run status.');
+    const pollData = await pollRes.json();
+    const status = pollData.data.status;
+
+    if(status === 'SUCCEEDED'){
+      const datasetId = pollData.data.defaultDatasetId;
+      const itemsRes = await fetch(`https://api.apify.com/v2/datasets/${datasetId}/items?token=${encodeURIComponent(token)}&format=json`);
+      if(!itemsRes.ok) throw new Error('Run finished, but the results could not be read.');
+      const items = await itemsRes.json();
+      return items[0];
+    }
+    if(status === 'FAILED' || status === 'ABORTED' || status === 'TIMED-OUT'){
+      throw new Error(`The run did not complete (status: ${status}). This is often a temporary network issue with the search step — try again.`);
+    }
+    if(elapsed > 900){
+      throw new Error('This is taking longer than 15 minutes. Check the run directly in Apify Console.');
+    }
+  }
+}
+
+function opportunityLevel(gapScore){
+  if(gapScore >= 50) return { label: 'High', cls: 'high', note: 'Strong potential for growth' };
+  if(gapScore >= 20) return { label: 'Medium', cls: 'medium', note: 'Worth a closer look' };
+  return { label: 'Low', cls: 'low', note: 'Supply already covers this well' };
+}
+
+function renderResults(data){
+  const demand = data.demandScore ?? 0;
+  const competition = data.competitionScore ?? 0;
+  const frustration = data.frustrationScore ?? 0;
+  const supply = data.supplyCount ?? 0;
+  const gap = data.gapScore ?? Math.max(0, demand - competition);
+  const totalSignals = data.totalSignalsFound ?? 0;
+  const opportunities = data.opportunities || [];
+  const level = opportunityLevel(gap);
+
+  const maxBar = Math.max(demand, Math.min(100, supply), 1);
+  const demandH = Math.max(18, Math.round((demand / maxBar) * 64));
+  const supplyH = Math.max(18, Math.round((Math.min(100,supply) / maxBar) * 64));
+
+  let oppHtml = '';
+  if(opportunities.length === 0){
+    oppHtml = '<p style="font-size:13px;color:var(--text-soft);">No strongly repeated demand pattern stood out from this batch — try more signals, or a different phrasing of the market.</p>';
+  } else {
+    oppHtml = opportunities.slice(0,8).map(o => {
+      const evid = (o.evidence || []).map(e => {
+        const src = e.url ? `<a href="${e.url}" target="_blank" rel="noopener">${e.source || 'source'}</a>` : (e.source || 'source');
+        return `<div class="evid-item">${(e.text||'').slice(0,140)} — ${src}</div>`;
+      }).join('');
+      return `<div class="opp">
+        <div class="opp-top">
+          <div class="opp-need">${o.need}</div>
+          <div class="opp-count">${o.mentionCount} mention${o.mentionCount===1?'':'s'}</div>
+        </div>
+        <div class="evid">${evid}</div>
+      </div>`;
+    }).join('');
+  }
+
+  screenResults.innerHTML = `
+    <div class="result-topbar">
+      <div class="result-title">Research Overview</div>
+      <div class="badge-complete">✓ Analysis complete</div>
+    </div>
+    <div class="result-sub">${data.industry} · ${data.location}${data.targetAudience ? ' · ' + data.targetAudience : ''}</div>
+
+    <div class="top-grid">
+      <div class="card">
+        <div class="card-label">Total signals found</div>
+        <div class="card-big">${totalSignals}</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Opportunity level</div>
+        <div class="opp-pill ${level.cls}">${level.label}</div>
+        <div class="opp-note">${level.note}</div>
+      </div>
+    </div>
+
+    <div class="scores3">
+      <div class="card">
+        <div class="card-label">Demand</div>
+        <div class="card-big">${demand}<span class="of100">/100</span></div>
+        <div class="score-bar-track"><div class="score-bar-fill fill-green" style="width:${demand}%"></div></div>
+      </div>
+      <div class="card">
+        <div class="card-label">Competition</div>
+        <div class="card-big">${competition}<span class="of100">/100</span></div>
+        <div class="score-bar-track"><div class="score-bar-fill fill-orange" style="width:${competition}%"></div></div>
+      </div>
+      <div class="card">
+        <div class="card-label">Customer frustration</div>
+        <div class="card-big">${frustration}<span class="of100">/100</span></div>
+        <div class="score-bar-track"><div class="score-bar-fill fill-purple" style="width:${frustration}%"></div></div>
+      </div>
+    </div>
+
+    <div class="supply-card">
+      <div class="supply-title">Demand vs Supply</div>
+      <div class="supply-blocks">
+        <div class="sblock">
+          <div class="n">${demand}</div>
+          <div class="swatch demand" style="height:${demandH}px;"></div>
+          <div class="lbl">Demand</div>
+        </div>
+        <div class="sblock">
+          <div class="n">${supply}</div>
+          <div class="swatch supply" style="height:${supplyH}px;"></div>
+          <div class="lbl">Supply</div>
+        </div>
+        <div class="supply-note">${demand > supply ? 'Demand is significantly higher than supply in this market.' : 'Supply looks reasonably matched to demand here.'}</div>
+      </div>
+    </div>
+
+    <div class="opps-head">What people are actually asking for</div>
+    ${oppHtml}
+
+    <div class="restart" id="restart-link">Run another search</div>
+  `;
+
+  document.getElementById('restart-link').addEventListener('click', () => {
+    showScreen('input');
+  });
+
+  showScreen('results');
+}
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  clearError();
+
+  const token = document.getElementById('token').value.trim();
+  const location = document.getElementById('location').value.trim();
+  const country = document.getElementById('country').value.trim();
+  const industry = document.getElementById('industry').value.trim();
+  const targetAudience = document.getElementById('audience').value.trim();
+
+  submitBtn.disabled = true;
+  setStep(1);
+  showScreen('loading');
+
+  try {
+    const data = await runActor(token, { location, country, industry, targetAudience, maxSignals: 20 });
+    renderResults(data);
+  } catch(err){
+    showScreen('input');
+    showError(err.message || 'Something went wrong. Please try again.');
+  } finally {
+    submitBtn.disabled = false;
+  }
+});
+</script>
+</body>
+</html>
