@@ -1,6 +1,6 @@
 import { log } from 'apify';
 
-const SIMILARITY_THRESHOLD = 0.8;
+const SIMILARITY_THRESHOLD = 0.72; // lowered from 0.8
 const EMBEDDING_MODEL = 'openai/text-embedding-3-small';
 const PROXY_URL = 'https://openrouter.apify.actor/api/v1/embeddings';
 
@@ -42,6 +42,17 @@ export async function clusterSignals(signals) {
     log.info('Generating embeddings via Apify OpenRouter proxy...');
     const texts = signals.map((s) => s.text || ' ');
     const vectors = await getEmbeddings(texts);
+
+    log.info(`Embedding dimension: ${vectors[0]?.length ?? 'N/A'}`);
+
+    // Diagnostic: log a sample of pairwise similarities so we can tune the threshold
+    const sampleSimilarities = [];
+    for (let i = 0; i < Math.min(5, vectors.length); i++) {
+        for (let j = i + 1; j < Math.min(5, vectors.length); j++) {
+            sampleSimilarities.push(cosineSimilarity(vectors[i], vectors[j]).toFixed(3));
+        }
+    }
+    log.info(`Sample pairwise similarities: ${sampleSimilarities.join(', ')}`);
 
     const used = new Array(signals.length).fill(false);
     const clusters = [];
