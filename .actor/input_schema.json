@@ -1,25 +1,37 @@
 {
-    "$schema": "https://apify.com/schemas/v1/input.ide.json",
-    "title": "CheerioCrawler Template",
-    "type": "object",
-    "schemaVersion": 1,
-    "properties": {
-        "startUrls": {
-            "title": "Start URLs",
-            "type": "array",
-            "description": "URLs to start with.",
-            "editor": "requestListSources",
-            "prefill": [
-                {
-                    "url": "https://crawlee.dev"
-                }
-            ]
-        },
-        "maxRequestsPerCrawl": {
-            "title": "Max Requests per Crawl",
-            "type": "integer",
-            "description": "Maximum number of requests that can be made by this crawler.",
-            "default": 100
-        }
+  "title": "Gapify Input",
+  "type": "object",
+  "schemaVersion": 1,
+  "properties": {
+    "location": {
+      "title": "Location",
+      "type": "string",
+      "description": "City or area to analyze, e.g. Lagos, Awka, Abuja",
+      "editor": "textfield",
+      "prefill": "Lagos"
+    },
+    "industry": {
+      "title": "Industry / Market",
+      "type": "string",
+      "description": "Market or product category, e.g. Fashion, Fintech, Food",
+      "editor": "textfield",
+      "prefill": "Fashion"
+    },
+    "targetAudience": {
+      "title": "Target Audience (optional)",
+      "type": "string",
+      "description": "Who this is for, e.g. Women 25-40, University students",
+      "editor": "textfield"
+      
+    },
+    "maxSignals": {
+      "title": "Max signals to collect",
+      "type": "integer",
+      "description": "How many search results to analyze (higher = more accurate, slower, costs more)",
+      "default": 30,
+      "minimum": 10,
+      "maximum": 100
     }
+  },
+  "required": ["location", "industry"]
 }
