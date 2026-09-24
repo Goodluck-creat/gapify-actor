@@ -2,9 +2,22 @@
 
 Find real, unmet market demand before you build. Not a guess. Evidence.
 
+## Try our web app
+
+We built a standalone web app with a cleaner search experience than the raw Actor form below. Try it here:
+
+**https://goodluck-creat.github.io/gapify-actor/gapify-web.html**
+
+You will need your own free Apify API token to run a search there, or use the demo token option on the page if one is available. Getting your own token takes about a minute:
+
+1. Create a free account at apify.com
+2. Go to Settings, then API and Integrations
+3. Copy your personal API token
+4. Paste it into the token field on our web app
+
 ## What does Gapify do?
 
-I built Gapify because most business ideas fail before they even launch, not because the idea was bad, but because nobody checked if people actually wanted it first. Gapify scans public web conversations, search results, reviews, forums, social mentions, for a city and industry you give it, and groups the ones that repeat into real demand signals. It then checks how many businesses already serve that need in the same area, so you can see how much people are asking for something versus how much supply already exists.
+We built Gapify because most business ideas fail before they even launch, not because the idea was bad, but because nobody checked if people actually wanted it first. Gapify scans public web conversations, search results, reviews, forums, social mentions, for a city and industry you give it, and groups the ones that repeat into real demand signals. It then checks how many businesses already serve that need in the same area, so you can see how much people are asking for something versus how much supply already exists.
 
 Every score comes with the actual quotes and links behind it, so you are not just trusting a number someone made up.
 
@@ -78,6 +91,6 @@ The search step occasionally hits a slow patch on the network. If a run times ou
 
 Gapify only reads information that is already public. It does not access private accounts or anything behind a paywall. The results reflect what is publicly visible at the time you run it, and they are meant to inform your decision, not replace your own judgment about the market.
 
-Found a bug or have an idea for what this should do next? Use the Issues tab above, I read them.
+Found a bug or have an idea for what this should do next? Use the Issues tab above, we read them.
 
-Built during the Apify x She Code Africa BuildHer Hackathon 2026.
+Built by our team for the Apify x She Code Africa BuildHer Hackathon 2026.
