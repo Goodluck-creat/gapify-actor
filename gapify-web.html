@@ -28,8 +28,8 @@
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
     background:
-      linear-gradient(160deg, rgba(14,75,61,0.82), rgba(20,40,30,0.55) 55%, rgba(182,255,61,0.18)),
-      url('https://images.pexels.com/photos/23490764/pexels-photo-23490764/free-photo-of-street-food-market-stand-with-vegetables-and-fruit-next-to-busy-street.jpeg?auto=compress&cs=tinysrgb&w=1920') center/cover no-repeat fixed;
+      linear-gradient(160deg, rgba(14,75,61,0.78), rgba(20,40,30,0.5) 55%, rgba(182,255,61,0.16)),
+      url('https://images.pexels.com/photos/33624055/pexels-photo-33624055/free-photo-of-vibrant-african-market-scene-in-jos-nigeria.jpeg?auto=compress&cs=tinysrgb&w=1920') center/cover no-repeat fixed;
     min-height: 100vh;
     position: relative;
     overflow-x: hidden;
@@ -84,28 +84,37 @@
 
   form.glass{ padding: 30px; }
 
+  form.no-card{ padding: 0; background: none; border: none; box-shadow: none; backdrop-filter: none; }
+
   .field{ margin-bottom: 17px; }
-  .field label{ display:block; font-size: 13px; font-weight:600; color: var(--ink); margin-bottom: 7px; }
-  .hint{ font-size: 12px; color: var(--ink-soft); margin-top: 7px; line-height:1.5; }
-  .hint a{ color: var(--green-deep); text-decoration:none; font-weight:600; cursor:pointer; }
+  .field label{ display:block; font-size: 13px; font-weight:600; color: #fff; margin-bottom: 7px; text-shadow: 0 1px 8px rgba(0,0,0,0.35); }
+  .hint{ font-size: 12px; color: rgba(255,255,255,0.82); margin-top: 7px; line-height:1.5; text-shadow: 0 1px 6px rgba(0,0,0,0.3); }
+  .hint a{ color: var(--green); text-decoration:none; font-weight:700; cursor:pointer; }
   .hint a:hover{ text-decoration:underline; }
   .row{ display:flex; gap: 12px; }
   .row .field{ flex:1; }
+  .token-row{ display:flex; gap:8px; }
+  .token-row input{ flex:1; }
+  .toggle-token{
+    flex-shrink:0; width:44px; border-radius:10px; border:1.5px solid rgba(255,255,255,0.25);
+    background: rgba(10,25,18,0.55); color:#fff; cursor:pointer; font-size:15px;
+  }
   input[type=text], input[type=password], input[type=number]{
     width: 100%;
     padding: 12px 14px;
     font-size: 14.5px;
     font-family: 'Inter', sans-serif;
-    color: var(--ink);
-    background: rgba(255,255,255,0.9);
-    border: 1.5px solid var(--border);
+    color: #fff;
+    background: rgba(8,22,16,0.62);
+    border: 1.5px solid rgba(255,255,255,0.22);
     border-radius: 10px;
     outline: none;
+    backdrop-filter: blur(6px);
     transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
   }
-  input::placeholder{ color: #9AA6A0; }
+  input::placeholder{ color: rgba(255,255,255,0.55); }
   input:focus{
-    border-color: var(--green-deep);
+    border-color: var(--green);
     box-shadow: 0 0 0 4px rgba(182,255,61,0.28);
     transform: translateY(-1px);
   }
@@ -275,11 +284,14 @@
     <h1>Find the gap in your market <span class="accent">today.</span></h1>
     <p class="sub">Find unmet needs, emerging demand, and overlooked opportunities before you build.</p>
 
-    <form id="gapify-form" class="glass">
+    <form id="gapify-form" class="no-card">
       <div class="field">
         <label for="token">Your Apify API token</label>
-        <input type="password" id="token" placeholder="apify_api_..." autocomplete="off" required>
-        <div class="hint">Stays in your browser only — never saved, never sent anywhere but Apify. Get yours free at <a href="https://console.apify.com/settings/integrations" target="_blank" rel="noopener">console.apify.com</a>, or <a href="#" id="demo-token-link">use our demo token</a> to try it without an account.</div>
+        <div class="token-row">
+          <input type="password" id="token" placeholder="apify_api_..." autocomplete="off" value="PASTE_YOUR_TOKEN_HERE_FOR_DEMO" required>
+          <button type="button" class="toggle-token" id="toggle-token" title="Show/hide token">👁</button>
+        </div>
+        <div class="hint">Prefilled with a demo token slot for this presentation — clear it and paste your own if you'd rather use your own account. Get a free token at <a href="https://console.apify.com/settings/integrations" target="_blank" rel="noopener">console.apify.com</a>.</div>
       </div>
       <div class="field">
         <label for="industry">What market are you exploring?</label>
@@ -345,7 +357,12 @@
 <script>
 const ACTOR_ID = 'goodluckchioma~gapify-actor'; // username~actor-name
 
-
+/* ======================================================
+   DEMO TOKEN — leave this blank in the public repo.
+   Only paste a real scoped token here temporarily on your
+   own laptop right before a live demo, then remove it again
+   before your next git push. Never commit a real value.
+   ====================================================== */
 const DEMO_TOKEN = '';
 
 document.getElementById('demo-token-link').addEventListener('click', (e) => {
