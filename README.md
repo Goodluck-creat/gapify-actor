@@ -1,117 +1,83 @@
-# JavaScript Crawlee & CheerioCrawler Actor Template
+# Gapify
 
-<!-- This is an Apify template readme -->
+Find real, unmet market demand before you build. Not a guess. Evidence.
 
-This template example was built with [Crawlee](https://crawlee.dev/) to scrape data from a website using [Cheerio](https://cheerio.js.org/) wrapped into [CheerioCrawler](https://crawlee.dev/api/cheerio-crawler/class/CheerioCrawler).
+## What does Gapify do?
 
-## Quick Start
+I built Gapify because most business ideas fail before they even launch, not because the idea was bad, but because nobody checked if people actually wanted it first. Gapify scans public web conversations, search results, reviews, forums, social mentions, for a city and industry you give it, and groups the ones that repeat into real demand signals. It then checks how many businesses already serve that need in the same area, so you can see how much people are asking for something versus how much supply already exists.
 
-Once you've installed the dependencies, start the Actor:
+Every score comes with the actual quotes and links behind it, so you are not just trusting a number someone made up.
 
-```bash
-apify run
+Works for any African city. Lagos, Nairobi, Accra, Cairo, wherever you are exploring.
+
+## Why use Gapify?
+
+Most new businesses launch on guesswork or by copying whatever a competitor already did. That is a big reason small businesses fail, especially for founders who cannot afford an expensive market research firm. Gapify replaces the guess with evidence that already exists online, just too scattered for one person to read through manually.
+
+Use it to:
+
+Validate a business idea before you spend money on it
+Compare a few cities or product categories for the same idea
+Back up a pitch deck or grant application with real numbers
+Find an underserved niche inside a market you already know well
+
+## How to use Gapify
+
+Click Try for free
+Enter a city, a country, and the industry or market you are exploring, for example Fashion, Fintech, Food
+Optionally add a target audience, for example Women 25 to 40
+Click Start and give it two to five minutes while it searches, groups signals, and checks supply
+Read your results in the Output tab, or export as JSON, CSV, or Excel
+
+## Input
+
+location: the city to analyze, for example Lagos
+country: the country the city is in, for example Nigeria
+industry: the market or product category, for example Fashion
+targetAudience: optional, describe who this is for
+maxSignals: how many signals to analyze, between 10 and 100, default is 30
+
+## Output
+
+```json
+{
+  "location": "Lagos",
+  "country": "Nigeria",
+  "industry": "Fashion",
+  "demandScore": 82,
+  "competitionScore": 34,
+  "frustrationScore": 76,
+  "gapScore": 48,
+  "supplyCount": 50,
+  "totalSignalsFound": 20,
+  "opportunities": [
+    {
+      "need": "affordable plus size work clothes",
+      "mentionCount": 6,
+      "evidence": [
+        { "text": "majority of items in my size cost 2 to 3x more...", "source": "reddit.com", "url": "https://..." }
+      ]
+    }
+  ]
+}
 ```
 
-Once your Actor is ready, you can push it to the Apify Console:
+You can download the full dataset as JSON, HTML, CSV, or Excel.
 
-```bash
-apify login # first, you need to log in if you haven't already done so
+## Pricing
 
-apify push
-```
+You pay $1.00 per completed gap analysis. One run, one price, nothing hidden. If a run fails before it finishes, you are not charged.
 
-## Project Structure
+## Tips
 
-```text
-.actor/
-├── actor.json # Actor config: name, version, env vars, runtime settings
-├── dataset_schema.json # Structure and representation of data produced by an Actor
-├── input_schema.json # Input validation & Console form definition
-└── output_schema.json # Specifies where an Actor stores its output
-src/
-└── main.js # Actor entry point and orchestrator
-storage/ # Local storage (mirrors Cloud during development)
-├── datasets/ # Output items (JSON objects)
-├── key_value_stores/ # Files, config, INPUT
-└── request_queues/ # Pending crawl requests
-Dockerfile # Container image definition
-```
+More signals means a more reliable score, but it takes longer and costs a little more in platform usage
+Try the same industry across two or three nearby cities and compare the results side by side
+The search step occasionally hits a slow patch on the network. If a run times out, just run it again
 
-For more information, see the [Actor definition](https://docs.apify.com/platform/actors/development/actor-definition) documentation.
+## A note on how this works
 
-## How it works
+Gapify only reads information that is already public. It does not access private accounts or anything behind a paywall. The results reflect what is publicly visible at the time you run it, and they are meant to inform your decision, not replace your own judgment about the market.
 
-This code is a JavaScript script that uses Cheerio to scrape data from a website. It then stores the website titles in a dataset.
+Found a bug or have an idea for what this should do next? Use the Issues tab above, I read them.
 
-- The crawler starts with URLs provided from the input `startUrls` field defined by the input schema. Number of scraped pages is limited by `maxPagesPerCrawl` field from the input schema.
-- The crawler uses `requestHandler` for each URL to extract the data from the page with the Cheerio library and to save the title and URL of each page to the dataset. It also logs out each result that is being saved.
-
-## What's included
-
-- **[Apify SDK](https://docs.apify.com/sdk/js)** - toolkit for building [Actors](https://apify.com/actors)
-- **[Crawlee](https://crawlee.dev/)** - web scraping and browser automation library
-- **[Input schema](https://docs.apify.com/platform/actors/development/input-schema)** - define and easily validate a schema for your Actor's input
-- **[Dataset](https://docs.apify.com/sdk/python/docs/concepts/storages#working-with-datasets)** - store structured data where each object stored has the same attributes
-- **[Cheerio](https://cheerio.js.org/)** - a fast, flexible & elegant library for parsing and manipulating HTML and XML
-- **[Proxy configuration](https://docs.apify.com/platform/proxy)** - rotate IP addresses to prevent blocking
-
-## Resources
-
-- [Quick Start](https://docs.apify.com/platform/actors/development/quick-start) guide for building your first Actor
-- [Video tutorial](https://www.youtube.com/watch?v=yTRHomGg9uQ) on building a scraper using CheerioCrawler
-- [Written tutorial](https://docs.apify.com/academy/web-scraping-for-beginners/challenge) on building a scraper using CheerioCrawler
-- [Web scraping with Cheerio in 2023](https://blog.apify.com/web-scraping-with-cheerio/)
-- How to [scrape a dynamic page](https://blog.apify.com/what-is-a-dynamic-page/) using Cheerio
-- [Integration with Zapier](https://apify.com/integrations), Make, Google Drive and others
-- [Video guide on getting data using Apify API](https://www.youtube.com/watch?v=ViYYDHSBAKM)
-
-## Creating Actors with templates
-
-[How to create Apify Actors with web scraping code templates](https://www.youtube.com/watch?v=u-i-Korzf8w)
-
-
-## Getting started
-
-For complete information [see this article](https://docs.apify.com/platform/actors/development#build-actor-at-apify-console). In short, you will:
-
-1. Build the Actor
-2. Run the Actor
-
-## Pull the Actor for local development
-
-If you would like to develop locally, you can pull the existing Actor from Apify console using Apify CLI:
-
-1. Install `apify-cli`
-
-    **Using Homebrew**
-
-    ```bash
-    brew install apify-cli
-    ```
-
-    **Using NPM**
-
-    ```bash
-    npm -g install apify-cli
-    ```
-
-2. Pull the Actor by its unique `<ActorId>`, which is one of the following:
-    - unique name of the Actor to pull (e.g. "apify/hello-world")
-    - or ID of the Actor to pull (e.g. "E2jjCZBezvAZnX8Rb")
-
-    You can find both by clicking on the Actor title at the top of the page, which will open a modal containing both Actor unique name and Actor ID.
-
-    This command will copy the Actor into the current directory on your local machine.
-
-    ```bash
-    apify pull <ActorId>
-    ```
-
-## Documentation reference
-
-To learn more about Apify and Actors, take a look at the following resources:
-
-- [Apify SDK for JavaScript documentation](https://docs.apify.com/sdk/js)
-- [Apify SDK for Python documentation](https://docs.apify.com/sdk/python)
-- [Apify Platform documentation](https://docs.apify.com/platform)
-- [Join our developer community on Discord](https://discord.com/invite/jyEM2PRvMU)
+Built during the Apify x She Code Africa BuildHer Hackathon 2026.
