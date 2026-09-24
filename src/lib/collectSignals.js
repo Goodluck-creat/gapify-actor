@@ -1,15 +1,15 @@
 import { Actor, log } from 'apify';
 
 const QUERY_TEMPLATES = [
-    (industry, location) => `"need" ${industry} ${location}`,
-    (industry, location) => `"looking for" ${industry} ${location}`,
-    (industry, location) => `"can't find" ${industry} ${location}`,
-    (industry, location) => `"where can I get" ${industry} ${location}`,
-    (industry, location) => `"wish there was" ${industry} ${location}`,
+    (industry, location, country) => `"need" ${industry} ${location} ${country}`,
+    (industry, location, country) => `"looking for" ${industry} ${location} ${country}`,
+    (industry, location, country) => `"can't find" ${industry} ${location} ${country}`,
+    (industry, location, country) => `"where can I get" ${industry} ${location} ${country}`,
+    (industry, location, country) => `"wish there was" ${industry} ${location} ${country}`,
 ];
 
-export async function collectSignals({ location, industry, maxSignals }) {
-    const queries = QUERY_TEMPLATES.map((fn) => fn(industry, location));
+export async function collectSignals({ location, country, industry, maxSignals }) {
+    const queries = QUERY_TEMPLATES.map((fn) => fn(industry, location, country));
     log.info('Running Google Search Results Scraper', { queries });
 
     const run = await Actor.call('apify/google-search-scraper', {

@@ -6,9 +6,16 @@
     "location": {
       "title": "Location",
       "type": "string",
-      "description": "City or area to analyze, e.g. Lagos, Awka, Abuja",
+      "description": "City to analyze, e.g. Lagos, Nairobi, Accra, Cairo",
       "editor": "textfield",
       "prefill": "Lagos"
+    },
+    "country": {
+      "title": "Country",
+      "type": "string",
+      "description": "Country the city is in, e.g. Nigeria, Kenya, Ghana, Egypt",
+      "editor": "textfield",
+      "prefill": "Nigeria"
     },
     "industry": {
       "title": "Industry / Market",
@@ -22,7 +29,6 @@
       "type": "string",
       "description": "Who this is for, e.g. Women 25-40, University students",
       "editor": "textfield"
-      
     },
     "maxSignals": {
       "title": "Max signals to collect",
@@ -33,5 +39,5 @@
       "maximum": 100
     }
   },
-  "required": ["location", "industry"]
+  "required": ["location", "country", "industry"]
 }

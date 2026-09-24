@@ -9,24 +9,25 @@ await Actor.init();
 
 const {
     location,
+    country,
     industry,
     targetAudience = '',
     maxSignals = 30,
 } = (await Actor.getInput()) ?? {};
 
-if (!location || !industry) {
-    throw new Error('Both "location" and "industry" are required inputs.');
+if (!location || !country || !industry) {
+    throw new Error('"location", "country", and "industry" are all required inputs.');
 }
 
-log.info(`Gapify analyzing "${industry}" in "${location}"`);
+log.info(`Gapify analyzing "${industry}" in "${location}, ${country}"`);
 
-const rawSignals = await collectSignals({ location, industry, maxSignals });
+const rawSignals = await collectSignals({ location, country, industry, maxSignals });
 log.info(`Collected ${rawSignals.length} raw signals`);
 
 const clusters = await clusterSignals(rawSignals);
 log.info(`Grouped into ${clusters.length} demand clusters`);
 
-const supplyCount = await checkSupply({ location, industry });
+const supplyCount = await checkSupply({ location, country, industry });
 log.info(`Found ${supplyCount} existing businesses`);
 
 const result = computeScores({ clusters, supplyCount, rawSignals });
@@ -39,6 +40,7 @@ try {
 
 await Actor.pushData({
     location,
+    country,
     industry,
     targetAudience,
     ...result,
