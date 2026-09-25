@@ -2,18 +2,6 @@
 
 Find real, unmet market demand before you build. Not a guess. Evidence.
 
-## Try our web app
-
-We built a standalone web app with a cleaner search experience than the raw Actor form below. Try it here:
-
-**https://goodluck-creat.github.io/gapify-actor/gapify-web.html**
-
-You will need your own free Apify API token to run a search there, or use the demo token option on the page if one is available. Getting your own token takes about a minute:
-
-1. Create a free account at apify.com
-2. Go to Settings, then API and Integrations
-3. Copy your personal API token
-4. Paste it into the token field on our web app
 
 ## What does Gapify do?
 
@@ -94,3 +82,16 @@ Gapify only reads information that is already public. It does not access private
 Found a bug or have an idea for what this should do next? Use the Issues tab above, we read them.
 
 Built by our team for the Apify x She Code Africa BuildHer Hackathon 2026.
+
+## Try our web app
+
+We built a standalone web app with a cleaner search experience than the raw Actor form below. Try it here:
+
+**https://goodluck-creat.github.io/gapify-actor/gapify-web.html**
+
+You will need your own free Apify API token to run a search there, or use the demo token option on the page if one is available. Getting your own token takes about a minute:
+
+1. Create a free account at apify.com
+2. Go to Settings, then API and Integrations
+3. Copy your personal API token
+4. Paste it into the token field on our web app
